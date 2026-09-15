@@ -9,6 +9,4 @@ from django.core.management import call_command
 django.setup()
 call_command("migrate", run_syncdb=True, verbosity=0, interactive=False)
 
-from crm.wsgi import application
-
-app = application
+from app.main import app

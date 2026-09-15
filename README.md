@@ -2,7 +2,23 @@
 
 **Connect • Manage • Grow**
 
-NexaCRM is a Django CRM workspace designed around the NexaCRM onboarding model: landing page → business selection → module selection → AI-style setup suggestion → ready workspace.
+NexaCRM is a FastAPI CRM workspace backed by SQLAlchemy and PostgreSQL. The production runtime no longer depends on Django or a writable serverless filesystem.
+
+## FastAPI local run
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+$env:DATABASE_URL="sqlite:///./db.sqlite3"  # local development only
+uvicorn app.main:app --reload
+```
+
+Open http://127.0.0.1:8000/.
+
+## Production database
+Set `DATABASE_URL` to a managed PostgreSQL connection string from Neon, Supabase, Railway, or another PostgreSQL provider. Set `SECRET_KEY` to a long random value and `ENVIRONMENT=production`.
+
+Vercel must have both `DATABASE_URL` and `SECRET_KEY` configured. The application intentionally fails during startup when Vercel has no `DATABASE_URL`; this prevents auth and session data from being written to ephemeral SQLite.
 
 ## Included modules
 - Landing page and pricing
