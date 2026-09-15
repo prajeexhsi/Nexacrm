@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Leads | NexaCRM{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Leads</h1><p>Manage and track all customer enquiries.</p></div><div class="button-row">
+<a class="btn secondary" href="{% url 'export_leads_csv' %}">CSV</a>
+<a class="btn secondary" href="{% url 'export_leads_xlsx' %}">Excel</a>
+<a class="btn secondary" href="{% url 'export_leads_pdf' %}">PDF</a>
+<a class="btn primary" href="{% url 'lead_add' %}">＋ Add Lead</a>
+</div></div>
+<div class="tabs"><a class="{% if not active_status %}active{% endif %}" href="{% url 'leads' %}">All</a><a href="?status=New" class="{% if active_status == 'New' %}active{% endif %}">New</a><a href="?status=Contacted" class="{% if active_status == 'Contacted' %}active{% endif %}">Contacted</a><a href="?status=Interested" class="{% if active_status == 'Interested' %}active{% endif %}">Interested</a><a href="?status=Follow-up" class="{% if active_status == 'Follow-up' %}active{% endif %}">Follow-up</a><a href="?status=Converted" class="{% if active_status == 'Converted' %}active{% endif %}">Converted</a><a href="?status=Not%20Interested" class="{% if active_status == 'Not Interested' %}active{% endif %}">Not Interested</a></div>
+<div class="card"><table><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Course</th><th>Source</th><th>Status</th><th>Assigned To</th><th>Actions</th></tr></thead><tbody>
+{% for lead in leads %}<tr><td>{{ forloop.counter }}</td><td><a class="link" href="{% url 'customer_detail' lead.pk %}">{{ lead.name }}</a></td><td>{{ lead.phone }}</td><td>{{ lead.course|default:"—" }}</td><td>{{ lead.source }}</td><td><span class="pill">{{ lead.status }}</span></td><td>{{ lead.assigned_to.username|default:"—" }}</td><td class="actions"><a href="{% url 'customer_detail' lead.pk %}">◉</a><a href="{% url 'lead_edit' lead.pk %}">✎</a><form method="post" action="{% url 'lead_delete' lead.pk %}" onsubmit="return confirm('Delete this lead?')">{% csrf_token %}<button>⌫</button></form></td></tr>{% empty %}<tr><td colspan="8" class="empty">No leads found.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}
