@@ -15,7 +15,12 @@ DB_ENGINE=os.getenv("DB_ENGINE","sqlite")
 if DB_ENGINE=="postgres":
     DATABASES={"default":{"ENGINE":"django.db.backends.postgresql","NAME":os.getenv("DB_NAME","nexacrm"),"USER":os.getenv("DB_USER","postgres"),"PASSWORD":os.getenv("DB_PASSWORD",""),"HOST":os.getenv("DB_HOST","localhost"),"PORT":os.getenv("DB_PORT","5432")}}
 else:
-    sqlite_path = os.getenv("SQLITE_PATH", "/tmp/nexacrm.sqlite3")
+    sqlite_path = os.getenv("SQLITE_PATH")
+    if not sqlite_path:
+        if os.getenv("VERCEL") or os.name != "nt":
+            sqlite_path = "/tmp/nexacrm.sqlite3"
+        else:
+            sqlite_path = str(BASE_DIR / "db.sqlite3")
     os.makedirs(os.path.dirname(sqlite_path) or ".", exist_ok=True)
     DATABASES={"default":{"ENGINE":"django.db.backends.sqlite3","NAME":sqlite_path}}
 AUTH_PASSWORD_VALIDATORS=[]
